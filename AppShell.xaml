@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="Elkollen.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:Elkollen.Pages"
+    Shell.FlyoutBehavior="Disabled"
+    Title="Elkollen">
+
+    <ShellContent 
+    Route="LoginPage"
+    ContentTemplate="{DataTemplate local:LoginPage}"
+    FlyoutItemIsVisible="False" />
+    <TabBar>
+        <Tab Title="Start">
+            <ShellContent
+             ContentTemplate="{DataTemplate local:MainPage}"
+             Route="MainPage" />
+        </Tab>
+        <Tab Title="Priser">
+            <ShellContent
+             ContentTemplate="{DataTemplate local:PricesPage}"
+             Route="PricesPage" />
+        </Tab>
+
+        <!-- Add more tabs here as needed -->
+    </TabBar>
+
+</Shell>

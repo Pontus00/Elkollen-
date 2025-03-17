@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:Elkollen.ViewModels"
+             xmlns:models="clr-namespace:Elkollen.Models"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             x:Class="Elkollen.Pages.PricesPage"
+             x:DataType="viewmodels:PricesViewModel"
+             Title="Elförbrukning">
+
+    <Grid RowDefinitions="Auto,*,Auto" Padding="20">
+        <!-- Date pickers for filtering -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,Auto,Auto,*" RowDefinitions="Auto,Auto" Margin="0,0,0,10">
+            <Label Grid.Row="0" Grid.Column="0" Text="Välj dygn:" VerticalOptions="Center" />
+            <DatePicker MinimumDate="2025-03-01" Grid.Row="0" Grid.Column="1" Date="{Binding StartTime, Mode=TwoWay}" Margin="5,0,0,0"/>
+            <!--Total consumption -->
+            <Label Grid.Row="0" Grid.Column="2" Text="{Binding FormattedTotalQuantity}" 
+       FontAttributes="Bold" VerticalOptions="Center" Margin="20,0,0,0" />
+            <!--Total cost -->
+            <Label Grid.Row="1" Grid.Column="2" Text="{Binding FormattedTotalCost}" 
+       FontAttributes="Bold" VerticalOptions="Center" Margin="20,5,0,0"/>
+        </Grid>
+
+        <RefreshView Grid.Row="1" 
+                     Command="{Binding LoadQuantitiesPricesCommand}"
+                     IsRefreshing="{Binding IsLoading}">
+            <CollectionView ItemsSource="{Binding QuantityPrices}"
+                          EmptyView="Ingen förbrukning tillgänglig">
+                <CollectionView.Header>
+                    <Grid ColumnDefinitions="2*, 2*, 3*, 2*, 2*" Padding="5" BackgroundColor="LightGray">
+                        <Label Text="Start" FontAttributes="Bold" Grid.Column="0" />
+                        <Label Text="Stopp" FontAttributes="Bold" Grid.Column="1" />
+                        <Label Text="Förbrukning" FontAttributes="Bold" Grid.Column="2" />
+                        <Label Text="Pris" FontAttributes="Bold" Grid.Column="3" />
+                        <Label Text="Totalt" FontAttributes="Bold" Grid.Column="4" />
+                    </Grid>
+                </CollectionView.Header>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:QuantityPriceModel">
+                        <Grid ColumnDefinitions="2*, 2*, 3*, 2*, 2*" Padding="5">
+                            <Label Text="{Binding StartTime}" Grid.Column="0" />
+                            <Label Text="{Binding EndTime}" Grid.Column="1" />
+                            <Label Text="{Binding FormattedQuantity}" Grid.Column="2" />
+                            <Label Text="{Binding FormattedPrice}" Grid.Column="3" />
+                            <Label Text="{Binding FormattedTotalcost}" Grid.Column="4" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+        <StackLayout Grid.Row="2" IsVisible="{Binding HasError}">
+            <Label Text="{Binding ErrorMessage}" 
+                   TextColor="Red" 
+                   HorizontalOptions="Center" />
+            <Button Text="Försök igen"
+                    Command="{Binding LoadQuantitiesPricesCommand}"
+                    HorizontalOptions="Center" />
+        </StackLayout>
+
+        <!-- Loading indicator -->
+        <ActivityIndicator Grid.Row="1" 
+                           IsRunning="{Binding IsLoading}"
+                           IsVisible="{Binding IsLoading}"
+                           HorizontalOptions="Center" 
+                           VerticalOptions="Center" />
+    </Grid>
+</ContentPage>

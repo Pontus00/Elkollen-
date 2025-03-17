@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:Elkollen.ViewModels"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="Elkollen.Pages.LoginPage"
+             x:DataType="viewmodels:LoginViewModel">
+
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30,0"
+            Spacing="25">
+
+            <Label
+                Text="Logga in"
+                Style="{StaticResource Headline}"
+                SemanticProperties.HeadingLevel="Level1" />
+
+            <Entry
+                Text="{Binding Username}"
+                Placeholder="Användarnamn"
+                Keyboard="Default" />
+
+            <Entry
+                Text="{Binding Password}"
+                Placeholder="Lösenord"
+                IsPassword="True"
+                Keyboard="Default" />
+
+            <Button
+                Text="Logga in"
+                BackgroundColor="Green"
+                Command="{Binding LoginCommand}"
+                HorizontalOptions="Fill"
+                IsEnabled="{Binding IsLoading, Converter={toolkit:InvertedBoolConverter}}" />
+
+            <ActivityIndicator IsRunning="{Binding IsLoading}" 
+                               IsVisible="{Binding IsLoading}" 
+                               HorizontalOptions="Center" />
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
