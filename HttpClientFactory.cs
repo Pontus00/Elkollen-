@@ -8,18 +8,23 @@ namespace Elkollen
 {
     public static class HttpClientFactory
     {
-        public static HttpClient CreateHttpClient()
+        //Singleton. Returnerar samma HttpClient varje gång.
+        private static readonly HttpClient _httpClient;
+
+        static HttpClientFactory()
         {
             var handler = new HttpClientHandler
             {
                 ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
             };
 
-            var newHandler = new HttpClient(handler);
-            newHandler.BaseAddress = new Uri("https://wattnowtestapi-d4a0h4dedmfnfybt.northeurope-01.azurewebsites.net");
-            //newHandler.BaseAddress = new Uri("https://localhost:7197"); //Windows
-            //newHandler.BaseAddress = new Uri("https://10.0.2.2:7197"); //Android
-            return newHandler;
+            _httpClient = new HttpClient(handler);
+            _httpClient.BaseAddress = new Uri("https://wattnowtestapi-d4a0h4dedmfnfybt.northeurope-01.azurewebsites.net");
+        }
+
+        public static HttpClient CreateHttpClient()
+        {
+            return _httpClient;
         }
     }
 }

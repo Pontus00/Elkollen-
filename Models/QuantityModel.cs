@@ -12,7 +12,7 @@ namespace Elkollen.Models
         public DateTime endTime { get; set; }
         public decimal amount { get; set; }
 
-        // Formatted display properties
+        // formaterar datumen och kvantiteten för bättre läsbarhet
         public string FormattedStartDate => startTime.ToString("yyyy-MM-dd");
         public string FormattedEndDate => endTime.ToString("yyyy-MM-dd");
 

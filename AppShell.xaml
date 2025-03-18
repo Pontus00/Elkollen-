@@ -23,7 +23,7 @@
              Route="PricesPage" />
         </Tab>
 
-        <!-- Add more tabs here as needed -->
+        
     </TabBar>
 
 </Shell>

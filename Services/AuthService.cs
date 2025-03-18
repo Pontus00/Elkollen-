@@ -32,7 +32,7 @@ namespace Elkollen.Services
                 return false;
             }
         }
-
+        // blev aldrig klar med logout-funktionen
         public async Task LogoutAsync()
         {
             SecureStorage.Default.Remove(TokenKey);

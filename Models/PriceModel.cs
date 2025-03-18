@@ -12,7 +12,7 @@ namespace Elkollen.Models
         public decimal price { get; set; }
         public bool complete { get; set; }
 
-        // Formatted display properties
+        // formaterar datumen och priset för bättre läsbarhet
         public string FormattedStartDate => startDate.ToString("yyyy-MM-dd");
         public string FormattedStartTime => startDate.ToString("HH:mm");
         public string FormattedPrice => $"{(price * 100):F2} öre";

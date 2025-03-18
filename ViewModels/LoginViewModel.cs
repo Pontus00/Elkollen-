@@ -38,11 +38,11 @@ namespace Elkollen.ViewModels
                 var token = await AuthenticateUser(Username, Password);
                 if (!string.IsNullOrEmpty(token))
                 {
-                    // Store the token
+                    // håller på token
                     await _authService.LoginAsync(token);
 
                     await Shell.Current.DisplayAlert("Perfekt", "Inloggning lyckad", "OK");
-                    // Navigate to the main page
+                    // navigering till MainPage
                     await Shell.Current.GoToAsync("//MainPage");
                 }
                 else
@@ -57,7 +57,7 @@ namespace Elkollen.ViewModels
         }
 
         [RelayCommand]
-        public async Task Logout() //Probably should be elsewhere but for now it's here
+        public async Task Logout() // la den bara här för att testa
         {
             await _authService.LogoutAsync();
             await Shell.Current.GoToAsync("//LoginPage");

@@ -44,22 +44,22 @@ namespace Elkollen.ViewModels
         {
             _authService = authService;
 
-            // Initialize date range
+            // Initisiere start- och stopptid
             _isInitializing = true;
             StartTime = DateTime.Today.AddDays(-2);
             StopTime = DateTime.Today.AddDays(-1);
             _isInitializing = false;
 
-            // Load prices when the view model is created
+            // laddar kvantiteter och priser
             LoadQuantitiesPricesCommand.Execute(null);
         }
 
-        // Helper method to normalize dates
+        // helper metod för att normalisera datum
         private DateTime GetNormalizedDate(DateTime date)
         {
             return new DateTime(date.Year, date.Month, date.Day, 0, 0, 0, DateTimeKind.Local);
         }
-        // Helper method to calculate totals
+        // helper metod för att beräkna totalsumman
         private void CalculateTotals()
         {
             TotalQuantity = QuantityPrices.Sum(qp => qp.Quantity);
@@ -71,7 +71,7 @@ namespace Elkollen.ViewModels
         [RelayCommand]
         private async Task LoadQuantitiesPrices()
         {
-            // Prevent multiple concurrent calls
+            // förhindra att flera anrop görs samtidigt
             if (_isLoadingData)
                 return;
 
@@ -85,7 +85,7 @@ namespace Elkollen.ViewModels
                 Debug.WriteLine($"Loading data for StartTime: {StartTime:yyyy-MM-dd}, StopTime: {StopTime:yyyy-MM-dd}");
                 var client = HttpClientFactory.CreateHttpClient();
 
-                // Add auth token if the user is authenticated
+                // lägger till token om användaren är inloggad
                 string token = await _authService.GetTokenAsync();
                 if (!string.IsNullOrEmpty(token))
                 {
@@ -93,11 +93,11 @@ namespace Elkollen.ViewModels
                         new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
                 }
 
-                // Ensure dates are normalized to midnight
+                // säkerställer att starttiden är 00:00
                 DateTime normalizedStartTime = GetNormalizedDate(StartTime);
                 DateTime normalizedStopTime = normalizedStartTime.AddDays(1);
 
-                // Build the query string with start and stop time parameters (use ISO format)
+                // bygger upp query parametrar för att hämta priser och kvantiteter
                 string startTimeParam = normalizedStartTime.ToString("o");
                 string stopTimeParam = normalizedStopTime.ToString("o");
 
@@ -120,7 +120,7 @@ namespace Elkollen.ViewModels
 
                     Debug.WriteLine($"Prices count: {fetchedPrices?.Count ?? 0}, Quantities count: {fetchedQuantities?.Count ?? 0}");
 
-                    // Check if the fetched prices and quantities are not null and have the same number of elements
+                    // kollar så att vi har lika många priser som kvantiteter
                     if (fetchedPrices == null || fetchedQuantities == null || fetchedPrices.Count != fetchedQuantities.Count)
                     {
                         HasError = true;
@@ -140,7 +140,7 @@ namespace Elkollen.ViewModels
                             Price = price.price
                         });
                     }
-                    // Calculate totals
+                    // kalulera totalsumman
                     CalculateTotals();
                 }
                 else
@@ -162,7 +162,7 @@ namespace Elkollen.ViewModels
             }
         }
 
-        // Simplified property changed handlers
+        // simplifierade properties
         partial void OnStartTimeChanged(DateTime value)
         {
             if (!_isInitializing)

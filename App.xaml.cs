@@ -18,7 +18,7 @@ namespace Elkollen
         {
             bool isAuthenticated = await _authService.IsAuthenticatedAsync();
 
-            // If the shell is already loaded, navigate programmatically
+            // om shellet redan finns och användaren är inloggad, gå till huvudsidan
             if (Shell.Current != null)
             {
                 if (isAuthenticated)
@@ -32,16 +32,16 @@ namespace Elkollen
         {
             Window window = new Window(new AppShell());
 
-            // Set a fixed size for the window (adjust these values as needed)
-            window.Width = 500;  // phone-like width
-            window.Height = 1000; // phone-like height
+            // storlek på fönstret
+            window.Width = 500;  
+            window.Height = 1050; 
 
-            // Center the window on the screen
+            // sätter fönstret i mitten
             var displayInfo = DeviceDisplay.MainDisplayInfo;
             window.X = (displayInfo.Width / displayInfo.Density / 2) - (window.Width / 2);
             window.Y = (displayInfo.Height / displayInfo.Density / 2) - (window.Height / 2);
 
-            // Optionally, prevent window resizing
+            // förhindra att ändra storleken
             window.MinimumWidth = window.Width;
             window.MinimumHeight = window.Height;
             window.MaximumWidth = window.Width;

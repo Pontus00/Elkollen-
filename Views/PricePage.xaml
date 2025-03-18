@@ -9,14 +9,14 @@
              Title="Elförbrukning">
 
     <Grid RowDefinitions="Auto,*,Auto" Padding="20">
-        <!-- Date pickers for filtering -->
+        <!-- Datumväljare för filtrering -->
         <Grid Grid.Row="0" ColumnDefinitions="Auto,Auto,Auto,*" RowDefinitions="Auto,Auto" Margin="0,0,0,10">
             <Label Grid.Row="0" Grid.Column="0" Text="Välj dygn:" VerticalOptions="Center" />
             <DatePicker MinimumDate="2025-03-01" Grid.Row="0" Grid.Column="1" Date="{Binding StartTime, Mode=TwoWay}" Margin="5,0,0,0"/>
-            <!--Total consumption -->
+            <!--Total konsumtion -->
             <Label Grid.Row="0" Grid.Column="2" Text="{Binding FormattedTotalQuantity}" 
        FontAttributes="Bold" VerticalOptions="Center" Margin="20,0,0,0" />
-            <!--Total cost -->
+            <!--Total kostnad -->
             <Label Grid.Row="1" Grid.Column="2" Text="{Binding FormattedTotalCost}" 
        FontAttributes="Bold" VerticalOptions="Center" Margin="20,5,0,0"/>
         </Grid>
