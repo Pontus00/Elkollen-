@@ -16,6 +16,7 @@ namespace Elkollen
             var builder = MauiApp.CreateBuilder();
             var hostBuilder = new HostBuilder();
 
+            // försök med lokal konfiguration. Behöver återgärdas
             hostBuilder.ConfigureAppConfiguration((context, config) =>
             {
                 var env = context.HostingEnvironment;

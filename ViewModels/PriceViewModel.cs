@@ -14,6 +14,7 @@ namespace Elkollen.ViewModels
         private bool _isInitializing = true;
         private bool _isLoadingData = false;
 
+        // Har använt community toolkit för att skapa properties och commands
         [ObservableProperty]
         private ObservableCollection<QuantityPriceModel> quantityPrices = new();
 
@@ -42,24 +43,25 @@ namespace Elkollen.ViewModels
 
         public PricesViewModel(IAuthService authService)
         {
+            // sätter authService med hjälp av dependency injection
             _authService = authService;
 
-            // Initisiere start- och stopptid
+            // sätt flagga för att undvika att anropa LoadQuantitiesPricesCommand alltså ladda ny data när vi sätter StartTime och StopTime
             _isInitializing = true;
             StartTime = DateTime.Today.AddDays(-2);
             StopTime = DateTime.Today.AddDays(-1);
             _isInitializing = false;
 
-            // laddar kvantiteter och priser
+            // laddar data när initialiseringen är klar
             LoadQuantitiesPricesCommand.Execute(null);
         }
 
-        // helper metod för att normalisera datum
+        // metod för att normalisera datum
         private DateTime GetNormalizedDate(DateTime date)
         {
             return new DateTime(date.Year, date.Month, date.Day, 0, 0, 0, DateTimeKind.Local);
         }
-        // helper metod för att beräkna totalsumman
+        // metod för att beräkna totalsumman
         private void CalculateTotals()
         {
             TotalQuantity = QuantityPrices.Sum(qp => qp.Quantity);
@@ -89,6 +91,7 @@ namespace Elkollen.ViewModels
                 string token = await _authService.GetTokenAsync();
                 if (!string.IsNullOrEmpty(token))
                 {
+                    // lägger till token i header för anropet till API:et
                     client.DefaultRequestHeaders.Authorization =
                         new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
                 }
@@ -104,9 +107,11 @@ namespace Elkollen.ViewModels
                 string requestPricesUri = $"/api/Prices?startTime={Uri.EscapeDataString(startTimeParam)}&stopTime={Uri.EscapeDataString(stopTimeParam)}";
                 string requestQuantitiesUri = $"/api/Metering?startTime={Uri.EscapeDataString(startTimeParam)}&stopTime={Uri.EscapeDataString(stopTimeParam)}";
 
+                // hämtar priser och kvantiteter som separata anrop
                 var pricesResponse = await client.GetAsync(requestPricesUri);
                 var quantitiesResponse = await client.GetAsync(requestQuantitiesUri);
 
+                // kollar så att anropen lyckades
                 if (pricesResponse.IsSuccessStatusCode && quantitiesResponse.IsSuccessStatusCode)
                 {
                     var priceContent = await pricesResponse.Content.ReadAsStringAsync();
@@ -120,7 +125,7 @@ namespace Elkollen.ViewModels
 
                     Debug.WriteLine($"Prices count: {fetchedPrices?.Count ?? 0}, Quantities count: {fetchedQuantities?.Count ?? 0}");
 
-                    // kollar så att vi har lika många priser som kvantiteter
+                    // kollar så att vi har lika många priser som kvantiteter och att de inte är null
                     if (fetchedPrices == null || fetchedQuantities == null || fetchedPrices.Count != fetchedQuantities.Count)
                     {
                         HasError = true;
@@ -128,10 +133,13 @@ namespace Elkollen.ViewModels
                         return;
                     }
 
+                    // rensar listan och lägger till nya priser och kvantiteter
                     QuantityPrices.Clear();
 
+                    // upptäckte kommandot Zip som kombinerar de två listorna
                     foreach (var (price, quantity) in fetchedPrices.Zip(fetchedQuantities, (price, quantity) => (price, quantity)))
                     {
+                        // lägger till priser och kvantiteter i listan
                         QuantityPrices.Add(new QuantityPriceModel
                         {
                             StartTime = quantity.FormattedStartTime,
@@ -162,7 +170,7 @@ namespace Elkollen.ViewModels
             }
         }
 
-        // simplifierade properties
+        // Förenklade properties. Använd inte om flaggan _isInitializing är satt
         partial void OnStartTimeChanged(DateTime value)
         {
             if (!_isInitializing)
